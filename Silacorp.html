@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-T">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organización SILACORP - Cursos de Brigadas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,7 +19,7 @@
             --dark-text: #1F2937; /* Gray-800 */
             --light-text: #6B7280; /* Gray-500 */
         }
-        .header-title-font { /* Renamed to avoid conflict with a class */
+        .header-title-font {
             font-family: 'Arial Black', Gadget, sans-serif;
             letter-spacing: 0.05em;
         }
@@ -58,9 +57,9 @@
             right: 25px;
             background-color: #25D366;
             color: white;
-            padding: 12px; /* Adjusted padding */
-            width: 60px; /* Fixed width */
-            height: 60px; /* Fixed height */
+            padding: 12px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             z-index: 1000;
@@ -73,7 +72,7 @@
             transform: scale(1.1);
             box-shadow: 0 6px 16px rgba(0,0,0,0.25);
         }
-        .form-input, .form-select, .form-textarea, .form-file-input { /* Renamed .form-file to .form-file-input */
+        .form-input, .form-select, .form-textarea, .form-file-input {
             border-width: 1px;
             border-color: #D1D5DB; /* Gray-300 */
             border-radius: 0.375rem; /* rounded-md */
@@ -89,7 +88,7 @@
             background-color: var(--primary-blue);
             color: white;
             border: none;
-            padding: 0.6rem 1rem; /* Adjusted padding */
+            padding: 0.6rem 1rem;
             margin-right: 0.75rem; /* mr-3 */
             border-radius: 0.375rem; /* rounded-md */
             cursor: pointer;
@@ -144,7 +143,7 @@
             background-color: var(--primary-red);
             border-radius: 2px;
         }
-        .section-title .icon { /* For icons within section titles */
+        .section-title .icon {
             color: var(--primary-red);
         }
          .nav-link {
@@ -187,7 +186,7 @@
     <header class="bg-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center">
-                <img id="logo" src="https://placehold.co/160x55/DC2626/FFFFFF?text=SILACORP" alt="Logo SILACORP" class="h-10 sm:h-12 mr-3" onerror="this.onerror=null; this.src='https://placehold.co/160x55/CCCCCC/000000?text=Logo+Error';">
+                <img id="logo" src="https://github.com/usigli75/silacorp/blob/main/Logo%20Silacorp.png?raw=true" alt="Logo SILACORP" class="h-10 sm:h-12 mr-3 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/160x55/CCCCCC/000000?text=Logo+Error';">
                 <span class="header-title-font text-2xl md:text-3xl font-bold text-primary-red">SILACORP</span>
             </div>
             <nav class="space-x-2 sm:space-x-4">
@@ -337,7 +336,7 @@
 
     <footer class="bg-dark-text text-white py-16">
         <div class="container mx-auto px-6 text-center">
-            <img id="logo-footer" src="https://placehold.co/180x60/FFFFFF/1F2937?text=SILACORP+Alt" alt="Logo SILACORP Footer" class="h-10 mx-auto mb-6" onerror="this.onerror=null; this.src='https://placehold.co/180x60/CCCCCC/000000?text=Logo+Error';">
+            <img id="logo-footer" src="https://github.com/usigli75/silacorp/blob/main/Logo%20Silacorp.png?raw=true" alt="Logo SILACORP Footer" class="h-10 mx-auto mb-6 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/180x60/CCCCCC/000000?text=Logo+Error';">
             <p class="text-2xl header-title-font mb-2 text-primary-red">Organización SILACORP</p>
             <p class="mb-8 text-gray-400">Capacitación que salva vidas. Tu seguridad es nuestra prioridad.</p>
             <div class="flex justify-center space-x-6 mb-10">
@@ -430,28 +429,26 @@
                     isValid = false;
                     telefonoInput.classList.add('border-red-500');
                     telefonoInput.classList.remove('border-gray-300', 'border-primary-blue');
-                    // showMessage is deferred until after all checks
                 } else if (telefonoInput) {
                     telefonoInput.classList.remove('border-red-500');
                     telefonoInput.classList.add('border-gray-300');
                 }
 
                 const cvFile = cvFileInput ? cvFileInput.files[0] : null;
-                if (cvFileInput && cvFileInput.hasAttribute('required') && !cvFile) {
-                    // This case should be caught by the generic [required] loop
-                    // but we can add specific message if needed later.
-                    isValid = true; // It will be false from the loop above.
-                }
+                // Redundant check as the [required] loop above handles it, but kept for clarity if specific logic was intended.
+                // if (cvFileInput && cvFileInput.hasAttribute('required') && !cvFile) {
+                // isValid = false; 
+                // }
 
 
-                if (cvFile) {
+                if (cvFile) { // This block only runs if a file IS selected
                     if (cvFile.size > 5 * 1024 * 1024) { // 5MB
                         showMessage('El archivo CV excede el tamaño máximo de 5MB.', 'error');
                         isValid = false;
                         if(cvFileInput) cvFileInput.classList.add('border-red-500');
                     }
                     const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-                    const lowerCaseAllowedTypes = ['.pdf', '.doc', '.docx']; // For file extension check
+                    const lowerCaseAllowedTypes = ['.pdf', '.doc', '.docx']; 
                     const fileExtension = cvFile.name.substring(cvFile.name.lastIndexOf('.')).toLowerCase();
 
                     if (!allowedTypes.includes(cvFile.type) && !lowerCaseAllowedTypes.includes(fileExtension) ) {
@@ -463,10 +460,9 @@
 
 
                 if (!isValid) {
-                    // Check if a specific message for CV or phone was already shown
                     let specificErrorShown = false;
-                    if (messageBox.style.display === 'block' && messageBox.classList.contains('error')) {
-                         if (messageBox.textContent.includes('CV') || messageBox.textContent.includes('teléfono')) {
+                    if (messageBox && messageBox.style.display === 'block' && messageBox.classList.contains('error')) {
+                         if (messageBox.textContent.includes('CV') || messageBox.textContent.includes('teléfono') || messageBox.textContent.includes('obligatorios')) {
                             specificErrorShown = true;
                          }
                     }
@@ -486,13 +482,15 @@
                     ciudad: form.ciudad.value,
                     estado: form.estado.value,
                     comentarios: form.comentarios.value,
-                    cvFileName: cvFile ? cvFile.name : 'No adjuntado (campo no obligatorio o error)'
+                    cvFileName: cvFile ? cvFile.name : 'No adjuntado' // Corrected logic here
                 });
 
                 showMessage('¡Inscripción generada correctamente!');
                 form.reset(); 
-                // Reset border colors after successful submission
-                form.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+                form.querySelectorAll('.border-red-500').forEach(el => {
+                    el.classList.remove('border-red-500');
+                    el.classList.add('border-gray-300'); // Restore default border
+                });
             });
         }
 
@@ -519,15 +517,14 @@
                 };
 
                 let formIsEmpty = true;
-                for (const key in formData) {
-                    if (formData[key] && formData[key] !== 'No adjuntado') {
-                        formIsEmpty = false;
-                        break;
-                    }
+                // Check if any of the main fields have a value
+                if (formData.nombre || formData.email || formData.curso || formData.telefono) {
+                    formIsEmpty = false;
                 }
 
+
                 if (formIsEmpty) {
-                    showMessage('Por favor, complete el formulario antes de exportar el recibo.', 'error');
+                    showMessage('Por favor, complete al menos los campos principales del formulario antes de exportar el recibo.', 'error');
                     return;
                 }
 
@@ -546,7 +543,7 @@
 
 
                 function addText(label, value) {
-                    if (value || value === 0) { 
+                    if (value || typeof value === 'number') { // Allow 0 as a valid value
                         doc.setFont("helvetica", "bold");
                         doc.text(label + ":", leftMargin, yPosition);
                         doc.setFont("helvetica", "normal");
@@ -565,9 +562,8 @@
                 addText("Ciudad", formData.ciudad);
                 addText("Estado", formData.estado);
                 
-                // Comentarios - allow more space
                 if (formData.comentarios) {
-                    yPosition += lineHeight / 2; // Extra space before comments
+                    yPosition += lineHeight / 2; 
                     doc.setFont("helvetica", "bold");
                     doc.text("Comentarios:", leftMargin, yPosition);
                     yPosition += lineHeight;
@@ -575,7 +571,7 @@
                     const commentLines = doc.splitTextToSize(String(formData.comentarios), doc.internal.pageSize.width - leftMargin * 2);
                     doc.text(commentLines, leftMargin, yPosition);
                     yPosition += (commentLines.length * lineHeight);
-                    yPosition += lineHeight / 2; // Extra space after comments
+                    yPosition += lineHeight / 2; 
                 } else {
                      addText("Comentarios", "N/A");
                 }
@@ -583,7 +579,7 @@
                 addText("CV Adjunto", formData.cvFileName); 
                 
                 doc.setFontSize(10);
-                doc.setTextColor(128, 128, 128); // Gray
+                doc.setTextColor(128, 128, 128); 
                 const finalYPos = Math.min(yPosition + 20, doc.internal.pageSize.height - 15);
                 doc.text("Este es un recibo de inscripción generado automáticamente.", 105, finalYPos, null, null, 'center');
 
