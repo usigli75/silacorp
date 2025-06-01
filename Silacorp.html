@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-T">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organización SILACORP - Cursos de Brigadas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            --primary-red: #DC2626; /* Red-600 */
+            --accent-red: #B91C1C;  /* Red-700 */
+            --primary-blue: #2563EB; /* Blue-600 */
+            --accent-blue: #1D4ED8; /* Blue-700 */
+            --light-bg: #F9FAFB; /* Gray-50 */
+            --medium-bg: #F3F4F6; /* Gray-100 */
+            --dark-text: #1F2937; /* Gray-800 */
+            --light-text: #6B7280; /* Gray-500 */
+        }
+        .header-title-font { /* Renamed to avoid conflict with a class */
+            font-family: 'Arial Black', Gadget, sans-serif;
+            letter-spacing: 0.05em;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            font-weight: 600; /* semibold */
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .btn-red {
+            background-color: var(--primary-red);
+            color: white;
+        }
+        .btn-red:hover {
+            background-color: var(--accent-red);
+        }
+        .btn-blue {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        .btn-blue:hover {
+            background-color: var(--accent-blue);
+        }
+        .whatsapp-button {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: white;
+            padding: 12px; /* Adjusted padding */
+            width: 60px; /* Fixed width */
+            height: 60px; /* Fixed height */
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+        .form-input, .form-select, .form-textarea, .form-file-input { /* Renamed .form-file to .form-file-input */
+            border-width: 1px;
+            border-color: #D1D5DB; /* Gray-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus, .form-file-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); /* Blue shadow */
+            outline: none;
+        }
+        .form-file-input::-webkit-file-upload-button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem; /* Adjusted padding */
+            margin-right: 0.75rem; /* mr-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form-file-input::-webkit-file-upload-button:hover {
+            background-color: var(--accent-blue);
+        }
+        .form-file-input {
+             padding: 0.25rem;
+        }
+
+        #message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        #message-box.success {
+            background-color: #10B981; /* Emerald-500 */
+            color: white;
+        }
+        #message-box.error {
+            background-color: #EF4444; /* Red-500 */
+            color: white;
+        }
+        .section-title {
+            font-size: 2.5rem; /* text-4xl */
+            font-weight: 700; /* bold */
+            color: var(--dark-text);
+            margin-bottom: 3rem; /* mb-12 */
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.75rem; /* pb-3 */
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-red);
+            border-radius: 2px;
+        }
+        .section-title .icon { /* For icons within section titles */
+            color: var(--primary-red);
+        }
+         .nav-link {
+            color: var(--dark-text);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: var(--primary-blue);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-red': 'var(--primary-red)',
+                        'accent-red': 'var(--accent-red)',
+                        'primary-blue': 'var(--primary-blue)',
+                        'accent-blue': 'var(--accent-blue)',
+                        'light-bg': 'var(--light-bg)',
+                        'medium-bg': 'var(--medium-bg)',
+                        'dark-text': 'var(--dark-text)',
+                        'light-text': 'var(--light-text)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        impact: ['Arial Black', 'Gadget', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light-bg text-dark-text">
+
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img id="logo" src="https://placehold.co/160x55/DC2626/FFFFFF?text=SILACORP" alt="Logo SILACORP" class="h-10 sm:h-12 mr-3" onerror="this.onerror=null; this.src='https://placehold.co/160x55/CCCCCC/000000?text=Logo+Error';">
+                <span class="header-title-font text-2xl md:text-3xl font-bold text-primary-red">SILACORP</span>
+            </div>
+            <nav class="space-x-2 sm:space-x-4">
+                <a href="#nosotros" class="nav-link">Nosotros</a>
+                <a href="#cursos" class="nav-link">Cursos</a>
+                <a href="#inscripcion" class="nav-link">Inscripción</a>
+            </nav>
+        </div>
+    </header>
+
+    <div id="message-box"></div>
+
+    <section id="nosotros" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title header-title-font"><i class="fas fa-building mr-3 icon"></i>Organización SILACORP</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <img src="https://placehold.co/600x450/2563EB/FFFFFF?text=Imagen+Institucional+SILACORP" alt="Imagen Institucional SILACORP" class="rounded-xl shadow-2xl w-full h-auto object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x450/CCCCCC/000000?text=Imagen+Error';">
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-blue mb-2 flex items-center"><i class="fas fa-bullseye fa-fw mr-3 text-primary-red"></i>Misión</h3>
+                        <p class="text-lg text-light-text leading-relaxed">Proveer capacitación de excelencia en seguridad y respuesta a emergencias, empoderando a individuos y organizaciones para crear entornos más seguros y resilientes.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-blue mb-2 flex items-center"><i class="fas fa-eye fa-fw mr-3 text-primary-red"></i>Visión</h3>
+                        <p class="text-lg text-light-text leading-relaxed">Ser la organización líder y referente en México y Latinoamérica en la formación de brigadistas y profesionales de la seguridad, reconocida por nuestra innovación, calidad y compromiso con la vida.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-primary-blue mb-2 flex items-center"><i class="fas fa-gem fa-fw mr-3 text-primary-red"></i>Valores</h3>
+                        <ul class="list-none space-y-2">
+                            <li class="flex items-center text-lg text-light-text"><i class="fas fa-check-circle fa-fw mr-2 text-primary-red"></i>Compromiso</li>
+                            <li class="flex items-center text-lg text-light-text"><i class="fas fa-check-circle fa-fw mr-2 text-primary-red"></i>Excelencia</li>
+                            <li class="flex items-center text-lg text-light-text"><i class="fas fa-check-circle fa-fw mr-2 text-primary-red"></i>Integridad</li>
+                            <li class="flex items-center text-lg text-light-text"><i class="fas fa-check-circle fa-fw mr-2 text-primary-red"></i>Innovación</li>
+                            <li class="flex items-center text-lg text-light-text"><i class="fas fa-check-circle fa-fw mr-2 text-primary-red"></i>Responsabilidad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cursos" class="py-16 md:py-24 bg-medium-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title header-title-font"><i class="fas fa-graduation-cap mr-3 icon"></i>Nuestros Cursos</h2>
+            <p class="text-xl text-center text-light-text mb-16 max-w-3xl mx-auto">Formamos profesionales altamente capacitados para actuar con eficacia y seguridad en situaciones críticas, protegiendo vidas y bienes.</p>
+            <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col">
+                    <div class="text-center mb-6">
+                        <i class="fas fa-users-cog fa-3x text-primary-blue"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-center text-dark-text mb-4">Brigadas de Emergencias</h3>
+                    <p class="text-light-text text-center leading-relaxed flex-grow">Capacitación integral para la conformación y operación de brigadas de emergencia, conforme a la normativa vigente.</p>
+                </div>
+                 <div class="bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col">
+                    <div class="text-center mb-6">
+                        <i class="fas fa-first-aid fa-3x text-primary-blue"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-center text-dark-text mb-4">Primeros Auxilios</h3>
+                    <p class="text-light-text text-center leading-relaxed flex-grow">Desarrollo de habilidades para la atención inmediata de lesionados o enfermos, vital antes de la ayuda profesional.</p>
+                </div>
+                 <div class="bg-white p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col">
+                    <div class="text-center mb-6">
+                        <i class="fas fa-fire-extinguisher fa-3x text-primary-blue"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-center text-dark-text mb-4">Combate Contra Incendios</h3>
+                    <p class="text-light-text text-center leading-relaxed flex-grow">Entrenamiento en uso de EPP y técnicas de extinción para conatos de incendio, priorizando la seguridad.</p>
+                </div>
+            </div>
+             <div class="mt-16 text-center">
+                <h3 class="text-3xl font-semibold text-dark-text mb-4 flex items-center justify-center"><i class="fas fa-bullseye-pointer mr-3 text-primary-blue"></i>Objetivo General</h3>
+                <p class="text-lg text-light-text leading-relaxed max-w-4xl mx-auto">
+                    Al finalizar nuestros cursos, el participante identificará riesgos, aplicará protocolos de emergencia (prevención, auxilio, recuperación) y usará equipo de protección y combate de forma eficiente y segura, salvaguardando vidas y bienes.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="inscripcion" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title header-title-font"><i class="fas fa-clipboard-list mr-3 icon"></i>Formulario de Inscripción</h2>
+            <form id="inscripcionForm" class="max-w-2xl mx-auto bg-medium-bg p-8 sm:p-10 rounded-xl shadow-2xl space-y-6">
+                <div>
+                    <label for="nombre" class="block text-sm font-medium text-dark-text mb-1">Nombre Completo:</label>
+                    <input type="text" id="nombre" name="nombre" required class="form-input w-full">
+                </div>
+                <div>
+                    <label for="fechaNacimiento" class="block text-sm font-medium text-dark-text mb-1">Fecha de Nacimiento:</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" required class="form-input w-full">
+                </div>
+                <div>
+                    <label for="curso" class="block text-sm font-medium text-dark-text mb-1">Selecciona el curso:</label>
+                    <select id="curso" name="curso" required class="form-select w-full">
+                        <option value="">-- Elige un curso --</option>
+                        <option value="Brigada de Emergencias">Brigada de Emergencias</option>
+                        <option value="Primeros Auxilios">Primeros Auxilios</option>
+                        <option value="Combate Contra Incendios">Combate Contra Incendios</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modalidad" class="block text-sm font-medium text-dark-text mb-1">Modalidad del curso:</label>
+                    <select id="modalidad" name="modalidad" required class="form-select w-full">
+                        <option value="">-- Elige modalidad --</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Virtual">Virtual</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="telefono" class="block text-sm font-medium text-dark-text mb-1">Teléfono (10 dígitos):</label>
+                    <input type="tel" id="telefono" name="telefono" required pattern="[0-9]{10}" title="Ingresa 10 dígitos numéricos" maxlength="10" class="form-input w-full">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-dark-text mb-1">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" required class="form-input w-full">
+                </div>
+                <div>
+                    <label for="ciudad" class="block text-sm font-medium text-dark-text mb-1">Ciudad:</label>
+                    <input type="text" id="ciudad" name="ciudad" required class="form-input w-full">
+                </div>
+                <div>
+                    <label for="estado" class="block text-sm font-medium text-dark-text mb-1">Estado:</label>
+                    <select id="estado" name="estado" required class="form-select w-full">
+                        <option value="">-- Selecciona un estado --</option>
+                        </select>
+                </div>
+                <div>
+                    <label for="comentarios" class="block text-sm font-medium text-dark-text mb-1">Comentarios Adicionales:</label>
+                    <textarea id="comentarios" name="comentarios" rows="4" class="form-textarea w-full"></textarea>
+                </div>
+                <div>
+                    <label for="cvFile" class="block text-sm font-medium text-dark-text mb-1">Adjuntar CV (PDF, DOC, DOCX):</label>
+                    <input type="file" id="cvFile" name="cvFile" accept=".pdf,.doc,.docx,.PDF,.DOC,.DOCX" required class="form-file-input w-full text-sm text-light-text file:text-sm">
+                    <p class="mt-1 text-xs text-light-text">Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 5MB (simulado).</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="submit" class="btn btn-red w-full sm:w-auto flex-grow text-base">
+                        <i class="fas fa-paper-plane mr-2"></i>Generar Inscripción
+                    </button>
+                    <button type="button" id="exportarPdf" class="btn btn-blue w-full sm:w-auto flex-grow text-base">
+                        <i class="fas fa-file-pdf mr-2"></i>Exportar Recibo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-dark-text text-white py-16">
+        <div class="container mx-auto px-6 text-center">
+            <img id="logo-footer" src="https://placehold.co/180x60/FFFFFF/1F2937?text=SILACORP+Alt" alt="Logo SILACORP Footer" class="h-10 mx-auto mb-6" onerror="this.onerror=null; this.src='https://placehold.co/180x60/CCCCCC/000000?text=Logo+Error';">
+            <p class="text-2xl header-title-font mb-2 text-primary-red">Organización SILACORP</p>
+            <p class="mb-8 text-gray-400">Capacitación que salva vidas. Tu seguridad es nuestra prioridad.</p>
+            <div class="flex justify-center space-x-6 mb-10">
+                <a href="https://facebook.com" target="_blank" aria-label="Facebook SILACORP" class="text-gray-400 hover:text-primary-blue transition duration-300 text-3xl"><i class="fab fa-facebook-square"></i></a>
+                <a href="https://instagram.com" target="_blank" aria-label="Instagram SILACORP" class="text-gray-400 hover:text-primary-blue transition duration-300 text-3xl"><i class="fab fa-instagram-square"></i></a>
+                <a href="https://tiktok.com" target="_blank" aria-label="TikTok SILACORP" class="text-gray-400 hover:text-primary-blue transition duration-300 text-3xl"><i class="fab fa-tiktok"></i></a>
+                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn SILACORP" class="text-gray-400 hover:text-primary-blue transition duration-300 text-3xl"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <p class="text-gray-500 text-sm">&copy; <span id="currentYear"></span> Organización SILACORP. Todos los derechos reservados.</p>
+            <p class="text-gray-600 text-xs mt-2">Diseño web por IA. Reemplaza logos y enlaces con tu información.</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/TUNUMERODEWHATSAPP" target="_blank" class="whatsapp-button" aria-label="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp fa-2x"></i>
+    </a>
+
+    <script>
+        // Populate Mexican States
+        const estadosMexico = [
+            "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas",
+            "Chihuahua", "Coahuila", "Colima", "Ciudad de México", "Durango", "Guanajuato",
+            "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit",
+            "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí",
+            "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"
+        ];
+        const estadoSelect = document.getElementById('estado');
+        if (estadoSelect) { // Check if element exists
+            estadosMexico.forEach(estado => {
+                const option = document.createElement('option');
+                option.value = estado;
+                option.textContent = estado;
+                estadoSelect.appendChild(option);
+            });
+        }
+
+
+        // Set current year in footer
+        const currentYearEl = document.getElementById('currentYear');
+        if (currentYearEl) {
+            currentYearEl.textContent = new Date().getFullYear();
+        }
+        
+
+        // Form submission and PDF export
+        const form = document.getElementById('inscripcionForm');
+        const exportPdfButton = document.getElementById('exportarPdf');
+        const messageBox = document.getElementById('message-box');
+        const cvFileInput = document.getElementById('cvFile');
+
+        function showMessage(message, type = 'success') {
+            if (!messageBox) return;
+            messageBox.textContent = message;
+            messageBox.className = ''; 
+            messageBox.classList.add(type); 
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 4000);
+        }
+
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+
+                let isValid = true;
+                form.querySelectorAll('[required]').forEach(input => {
+                    // For file inputs, check files.length
+                    if (input.type === "file") {
+                        if (input.files.length === 0) {
+                            isValid = false;
+                            input.classList.add('border-red-500'); 
+                            input.classList.remove('border-gray-300', 'border-primary-blue');
+                        } else {
+                            input.classList.remove('border-red-500');
+                            input.classList.add('border-gray-300');
+                        }
+                    } else if (!input.value.trim()) { // Check trimmed value for other inputs
+                        isValid = false;
+                        input.classList.add('border-red-500');
+                        input.classList.remove('border-gray-300', 'border-primary-blue');
+                    } else {
+                        input.classList.remove('border-red-500');
+                         input.classList.add('border-gray-300');
+                    }
+                });
+                
+                const telefonoInput = document.getElementById('telefono');
+                if (telefonoInput && !/^[0-9]{10}$/.test(telefonoInput.value)) {
+                    isValid = false;
+                    telefonoInput.classList.add('border-red-500');
+                    telefonoInput.classList.remove('border-gray-300', 'border-primary-blue');
+                    // showMessage is deferred until after all checks
+                } else if (telefonoInput) {
+                    telefonoInput.classList.remove('border-red-500');
+                    telefonoInput.classList.add('border-gray-300');
+                }
+
+                const cvFile = cvFileInput ? cvFileInput.files[0] : null;
+                if (cvFileInput && cvFileInput.hasAttribute('required') && !cvFile) {
+                    // This case should be caught by the generic [required] loop
+                    // but we can add specific message if needed later.
+                    isValid = true; // It will be false from the loop above.
+                }
+
+
+                if (cvFile) {
+                    if (cvFile.size > 5 * 1024 * 1024) { // 5MB
+                        showMessage('El archivo CV excede el tamaño máximo de 5MB.', 'error');
+                        isValid = false;
+                        if(cvFileInput) cvFileInput.classList.add('border-red-500');
+                    }
+                    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                    const lowerCaseAllowedTypes = ['.pdf', '.doc', '.docx']; // For file extension check
+                    const fileExtension = cvFile.name.substring(cvFile.name.lastIndexOf('.')).toLowerCase();
+
+                    if (!allowedTypes.includes(cvFile.type) && !lowerCaseAllowedTypes.includes(fileExtension) ) {
+                        showMessage('Tipo de archivo de CV no permitido. Use PDF, DOC o DOCX.', 'error');
+                        isValid = false;
+                         if(cvFileInput) cvFileInput.classList.add('border-red-500');
+                    }
+                }
+
+
+                if (!isValid) {
+                    // Check if a specific message for CV or phone was already shown
+                    let specificErrorShown = false;
+                    if (messageBox.style.display === 'block' && messageBox.classList.contains('error')) {
+                         if (messageBox.textContent.includes('CV') || messageBox.textContent.includes('teléfono')) {
+                            specificErrorShown = true;
+                         }
+                    }
+                    if (!specificErrorShown) {
+                        showMessage('Por favor, completa todos los campos obligatorios y verifica los errores.', 'error');
+                    }
+                    return;
+                }
+                
+                console.log('Formulario enviado:', {
+                    nombre: form.nombre.value,
+                    fechaNacimiento: form.fechaNacimiento.value,
+                    curso: form.curso.value,
+                    modalidad: form.modalidad.value,
+                    telefono: form.telefono.value,
+                    email: form.email.value,
+                    ciudad: form.ciudad.value,
+                    estado: form.estado.value,
+                    comentarios: form.comentarios.value,
+                    cvFileName: cvFile ? cvFile.name : 'No adjuntado (campo no obligatorio o error)'
+                });
+
+                showMessage('¡Inscripción generada correctamente!');
+                form.reset(); 
+                // Reset border colors after successful submission
+                form.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+            });
+        }
+
+        if (exportPdfButton) {
+            exportPdfButton.addEventListener('click', function() {
+                if (typeof jspdf === 'undefined' || typeof jspdf.jsPDF === 'undefined') {
+                    showMessage('Error al cargar la librería PDF. Inténtalo de nuevo.', 'error');
+                    return;
+                }
+                const { jsPDF } = jspdf;
+                const doc = new jsPDF();
+
+                const formData = {
+                    nombre: form.nombre.value,
+                    fechaNacimiento: form.fechaNacimiento.value,
+                    curso: form.curso.value,
+                    modalidad: form.modalidad.value,
+                    telefono: form.telefono.value,
+                    email: form.email.value,
+                    ciudad: form.ciudad.value,
+                    estado: form.estado.value,
+                    comentarios: form.comentarios.value,
+                    cvFileName: cvFileInput && cvFileInput.files[0] ? cvFileInput.files[0].name : 'No adjuntado'
+                };
+
+                let formIsEmpty = true;
+                for (const key in formData) {
+                    if (formData[key] && formData[key] !== 'No adjuntado') {
+                        formIsEmpty = false;
+                        break;
+                    }
+                }
+
+                if (formIsEmpty) {
+                    showMessage('Por favor, complete el formulario antes de exportar el recibo.', 'error');
+                    return;
+                }
+
+                doc.setFontSize(20);
+                doc.setTextColor(getComputedStyle(document.body).getPropertyValue('--primary-red').trim()); 
+                doc.setFont("helvetica", "bold");
+                doc.text("Recibo de Inscripción - SILACORP", 105, 25, null, null, 'center');
+                
+                doc.setFontSize(12);
+                doc.setTextColor(getComputedStyle(document.body).getPropertyValue('--dark-text').trim()); 
+                let yPosition = 45;
+                const lineHeight = 8; 
+                const leftMargin = 20;
+                const valueMargin = 75;
+                const maxLineWidth = 115;
+
+
+                function addText(label, value) {
+                    if (value || value === 0) { 
+                        doc.setFont("helvetica", "bold");
+                        doc.text(label + ":", leftMargin, yPosition);
+                        doc.setFont("helvetica", "normal");
+                        const textLines = doc.splitTextToSize(String(value), maxLineWidth); 
+                        doc.text(textLines, valueMargin, yPosition);
+                        yPosition += (textLines.length * lineHeight) ; 
+                    }
+                }
+
+                addText("Nombre Completo", formData.nombre);
+                addText("Fecha de Nacimiento", formData.fechaNacimiento);
+                addText("Curso Inscrito", formData.curso);
+                addText("Modalidad", formData.modalidad);
+                addText("Teléfono", formData.telefono);
+                addText("Correo Electrónico", formData.email);
+                addText("Ciudad", formData.ciudad);
+                addText("Estado", formData.estado);
+                
+                // Comentarios - allow more space
+                if (formData.comentarios) {
+                    yPosition += lineHeight / 2; // Extra space before comments
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Comentarios:", leftMargin, yPosition);
+                    yPosition += lineHeight;
+                    doc.setFont("helvetica", "normal");
+                    const commentLines = doc.splitTextToSize(String(formData.comentarios), doc.internal.pageSize.width - leftMargin * 2);
+                    doc.text(commentLines, leftMargin, yPosition);
+                    yPosition += (commentLines.length * lineHeight);
+                    yPosition += lineHeight / 2; // Extra space after comments
+                } else {
+                     addText("Comentarios", "N/A");
+                }
+                
+                addText("CV Adjunto", formData.cvFileName); 
+                
+                doc.setFontSize(10);
+                doc.setTextColor(128, 128, 128); // Gray
+                const finalYPos = Math.min(yPosition + 20, doc.internal.pageSize.height - 15);
+                doc.text("Este es un recibo de inscripción generado automáticamente.", 105, finalYPos, null, null, 'center');
+
+                doc.save(`Recibo_Inscripcion_${(formData.nombre || 'Usuario').replace(/\s+/g, '_')}.pdf`);
+                showMessage('Recibo PDF generado correctamente.');
+            });
+        }
+        
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetElement = document.querySelector(this.getAttribute('href'));
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
