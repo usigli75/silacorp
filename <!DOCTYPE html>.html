@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organización SILACORP - Cursos de Brigadas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* Light gray background */
+        }
+        .header-bg {
+            background-color: #D90429; /* Red primary */
+        }
+        .text-brand-red {
+            color: #D90429;
+        }
+        .bg-brand-red {
+            background-color: #D90429;
+        }
+        .border-brand-red {
+            border-color: #D90429;
+        }
+        .btn-primary {
+            background-color: #D90429;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #B70021; /* Darker red */
+        }
+        .btn-secondary {
+            background-color: #4B5563; /* Gray */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #374151; /* Darker Gray */
+        }
+        h1, h2, h3 {
+            font-weight: 900; /* Extra bold for titles */
+            color: #1F2937; /* Dark gray for text */
+        }
+        h1 { font-size: 2.5rem; line-height: 1.2; }
+        h2 { font-size: 2rem; line-height: 1.2; }
+        h3 { font-size: 1.5rem; line-height: 1.2; }
+
+        .form-input {
+            border: 1px solid #D1D5DB;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #D90429;
+            box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.3);
+            outline: none;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        .section-padding {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+        .social-icon svg {
+            width: 2rem;
+            height: 2rem;
+            fill: white;
+            transition: fill 0.3s ease;
+        }
+        .social-icon:hover svg {
+            fill: #FCA5A5; /* Lighter red for hover */
+        }
+        /* Custom Modal for Success Message */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 0.75rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-close-button:hover,
+        .modal-close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .whatsapp-float svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <header class="header-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center">
+            <div class="flex items-center">
+                <img id="logoEmpresa" src="https://placehold.co/150x50/ffffff/D90429?text=SILACORP" alt="Logo SILACORP" class="h-12 mr-4" onerror="this.onerror=null; this.src='https://placehold.co/150x50/ffffff/D90429?text=Logo+Error';">
+                <span class="font-bold text-2xl tracking-tight">Organización SILACORP</span>
+            </div>
+            <nav class="mt-4 md:mt-0">
+                <ul class="flex space-x-4 md:space-x-6 text-lg">
+                    <li><a href="#inicio" class="hover:text-red-200 transition duration-300">Inicio</a></li>
+                    <li><a href="#quienes-somos" class="hover:text-red-200 transition duration-300">Quiénes Somos</a></li>
+                    <li><a href="#cursos" class="hover:text-red-200 transition duration-300">Cursos</a></li>
+                    <li><a href="#inscripcion" class="hover:text-red-200 transition duration-300">Inscripción</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="inicio" class="bg-white section-padding">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-black text-brand-red mb-6">Capacitación Profesional en Emergencias</h1>
+            <p class="text-lg md:text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
+                En Organización SILACORP, preparamos a tu personal para responder eficazmente ante cualquier eventualidad.
+                ¡Conoce nuestros cursos y fortalece la seguridad en tu entorno!
+            </p>
+            <a href="#inscripcion" class="btn-primary text-xl">Inscríbete Ahora</a>
+        </div>
+    </section>
+
+    <section id="quienes-somos" class="section-padding">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-black text-center mb-12 text-brand-red">Conoce a Organización SILACORP</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="text-2xl font-bold mb-4 text-brand-red">Misión</h3>
+                    <p class="text-gray-700">Proveer capacitación de la más alta calidad en materia de protección civil y respuesta a emergencias, fomentando una cultura de prevención y seguridad en empresas y comunidades.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-2xl font-bold mb-4 text-brand-red">Visión</h3>
+                    <p class="text-gray-700">Ser la organización líder y referente a nivel nacional en la formación de brigadistas y personal de respuesta, reconocida por nuestra excelencia, innovación y compromiso con la vida.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-2xl font-bold mb-4 text-brand-red">Valores</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Compromiso</li>
+                        <li>Profesionalismo</li>
+                        <li>Integridad</li>
+                        <li>Responsabilidad</li>
+                        <li>Innovación</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-2xl font-bold mb-4 text-brand-red">Objetivo del Curso General</h3>
+                    <p class="text-gray-700">Capacitar a los participantes con los conocimientos teóricos y prácticos necesarios para actuar de manera eficiente y segura en situaciones de emergencia, minimizando riesgos y protegiendo vidas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cursos" class="bg-gray-200 section-padding">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-black text-center mb-12 text-brand-red">Nuestros Cursos Especializados</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card text-center">
+                    <div class="text-brand-red mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Brigadas de Emergencias</h3>
+                    <p class="text-gray-600">Formación integral para la actuación coordinada en evacuación, comunicación y manejo de crisis.</p>
+                </div>
+                <div class="card text-center">
+                     <div class="text-brand-red mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto lucide lucide-heart-pulse"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.7-1.44A2.2 2.2 0 0 1 12.5 10h1l.7 1.44A2.2 2.2 0 0 0 16.5 12h3.28"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Primeros Auxilios</h3>
+                    <p class="text-gray-600">Capacitación esencial para la atención inmediata de lesionados y emergencias médicas.</p>
+                </div>
+                <div class="card text-center">
+                    <div class="text-brand-red mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto lucide lucide-flame"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Combate Contra Incendios</h3>
+                    <p class="text-gray-600">Técnicas y estrategias para la prevención, control y extinción de incendios.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="inscripcion" class="section-padding">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-black text-center mb-12 text-brand-red">Formulario de Inscripción</h2>
+            <div class="card max-w-3xl mx-auto">
+                <form id="inscripcionForm">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="nombre" class="form-label">Nombre Completo:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-input" required>
+                        </div>
+                        <div>
+                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
+                            <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="curso" class="form-label">Selecciona el curso:</label>
+                        <select id="curso" name="curso" class="form-input" required>
+                            <option value="">-- Elige un curso --</option>
+                            <option value="Brigada de Emergencias">Brigada de Emergencias</option>
+                            <option value="Primeros Auxilios">Primeros Auxilios</option>
+                            <option value="Combate Contra Incendios">Combate Contra Incendios</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="modalidad" class="form-label">Modalidad del curso:</label>
+                        <select id="modalidad" name="modalidad" class="form-input" required>
+                            <option value="">-- Elige una modalidad --</option>
+                            <option value="Presencial">Presencial</option>
+                            <option value="Virtual">Virtual</option>
+                        </select>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="telefono" class="form-label">Teléfono (10 dígitos):</label>
+                            <input type="tel" id="telefono" name="telefono" class="form-input" maxlength="10" pattern="\d{10}" title="Ingresa 10 dígitos numéricos" required>
+                        </div>
+                        <div>
+                            <label for="email" class="form-label">Correo Electrónico:</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                    </div>
+
+                     <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="ciudad" class="form-label">Ciudad:</label>
+                            <input type="text" id="ciudad" name="ciudad" class="form-input" required>
+                        </div>
+                        <div>
+                            <label for="estado" class="form-label">Estado:</label>
+                            <select id="estado" name="estado" class="form-input" required>
+                                <option value="">-- Selecciona un estado --</option>
+                                </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="comentarios" class="form-label">Comentarios Adicionales:</label>
+                        <textarea id="comentarios" name="comentarios" rows="4" class="form-input"></textarea>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button type="submit" class="btn-primary w-full sm:w-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                            Generar Inscripción
+                        </button>
+                        <button type="button" id="exportarPdfBtn" class="btn-secondary w-full sm:w-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m15 15-3 3-3-3"/></svg>
+                            Exportar Recibo PDF
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-brand-red text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-2xl font-bold mb-6">Síguenos en Redes Sociales</h3>
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="https://facebook.com/organizacionsilacorp" target="_blank" class="social-icon" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="https://instagram.com/organizacionsilacorp" target="_blank" class="social-icon" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://tiktok.com/@organizacionsilacorp" target="_blank" class="social-icon" aria-label="TikTok">
+                    <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.47.02-4.8-.73-6.16-2.73-1.79-2.66-.49-5.78 2.19-7.19.69-.35 1.43-.52 2.19-.52.21 0 .4-.03.6-.08v-4.16c-.44.05-.88.15-1.3.31-.93.36-1.84.79-2.65 1.27C4.11 13.7 3.3 12.81 2.78 11.9c-.2-.34-.37-.71-.46-1.1v-3.85c.88-.08 1.75-.21 2.62-.35.83-.13 1.64-.32 2.48-.48.07-1.53.6-3.06 1.73-4.13 1.09-1.06 2.64-1.57 4.21-1.75Z"></path></svg>
+                </a>
+                <a href="https://linkedin.com/company/organizacionsilacorp" target="_blank" class="social-icon" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+            </div>
+            <p class="text-sm">&copy; <span id="currentYear"></span> Organización SILACORP. Todos los derechos reservados.</p>
+            <p class="text-xs mt-2">Diseñado con ❤️</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/521XXXXXXXXXX?text=Hola%2C%20estoy%20interesado%20en%20sus%20cursos." target="_blank" class="whatsapp-float" aria-label="Contactar por WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M19.065 14.906c-.3-.15-1.762-.869-2.036-.969-.273-.099-.473-.149-.673.149s-.769.969-.942 1.168-.349.224-.649.075-1.212-.449-2.308-1.425c-.854-.768-1.425-1.718-1.598-2.018-.173-.299-.019-.449.13-.598s.299-.349.449-.524c.125-.149.175-.249.249-.424s.025-.324-.049-.474c-.075-.149-.673-1.618-.923-2.217-.24-.585-.487-.504-.673-.514-.173-.009-.374-.009-.573-.009s-.524.074-.798.374c-.274.299-1.049 1.018-1.049 2.487s1.074 2.887 1.224 3.087c.149.199 2.099 3.218 5.093 4.49C16.699 19.706 17.049 19.8 17.55 19.75c.748-.074 1.762-.719 2.012-1.419.249-.699.249-1.298.174-1.418zM12.001 2.001C6.478 2.001 2 6.478 2 12.001c0 1.755.456 3.422 1.259 4.896L2 22.001l5.269-1.329c1.425.718 3.025 1.128 4.732 1.128 5.523 0 10-4.477 10-10S17.524 2.001 12.001 2.001zm0 18.002c-1.574 0-3.091-.396-4.419-1.113l-.316-.189-3.281.819.833-3.218-.209-.341a8.002 8.002 0 0 1-1.273-4.968c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"></path></svg>
+    </a>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close-button" onclick="closeModal()">&times;</span>
+            <div class="text-green-500 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto lucide lucide-check-circle-2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">¡Inscripción Exitosa!</h3>
+            <p class="text-gray-700">Te has inscrito correctamente al curso. Pronto nos pondremos en contacto contigo.</p>
+            <button onclick="closeModal()" class="btn-primary mt-6">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        // Estados de México
+        const estadosMexico = [
+            "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila",
+            "Colima", "Chiapas", "Chihuahua", "Ciudad de México", "Durango", "Guanajuato",
+            "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos", "Nayarit",
+            "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí",
+            "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"
+        ];
+
+        const estadoSelect = document.getElementById('estado');
+        estadosMexico.forEach(estado => {
+            const option = document.createElement('option');
+            option.value = estado;
+            option.textContent = estado;
+            estadoSelect.appendChild(option);
+        });
+
+        // Año actual para el footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Validación de teléfono (solo números y 10 dígitos)
+        const telefonoInput = document.getElementById('telefono');
+        telefonoInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Eliminar no dígitos
+            if (value.length > 10) {
+                value = value.substring(0, 10); // Limitar a 10 dígitos
+            }
+            e.target.value = value;
+        });
+        
+        // Modal
+        const modal = document.getElementById('successModal');
+        function openModal() {
+            modal.style.display = "block";
+        }
+        function closeModal() {
+            modal.style.display = "none";
+        }
+        // Cerrar modal si se hace clic fuera
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Manejo del formulario de inscripción
+        const inscripcionForm = document.getElementById('inscripcionForm');
+        inscripcionForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevenir envío normal del formulario
+
+            // Aquí podrías agregar lógica para enviar los datos a un servidor si es necesario.
+            // Por ahora, solo mostramos el mensaje y limpiamos.
+
+            openModal(); // Mostrar mensaje de éxito
+            inscripcionForm.reset(); // Limpiar el formulario
+        });
+
+        // Exportar a PDF
+        const exportarPdfBtn = document.getElementById('exportarPdfBtn');
+        exportarPdfBtn.addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const nombre = document.getElementById('nombre').value;
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const curso = document.getElementById('curso').value;
+            const modalidad = document.getElementById('modalidad').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const ciudad = document.getElementById('ciudad').value;
+            const estado = document.getElementById('estado').value;
+            const comentarios = document.getElementById('comentarios').value;
+
+            if (!nombre || !curso || !modalidad || !telefono || !email) {
+                alert("Por favor, completa al menos los campos de nombre, curso, modalidad, teléfono y email para generar el recibo.");
+                return;
+            }
+            
+            doc.setFontSize(22);
+            doc.setTextColor(217, 4, 41); // Color rojo SILACORP
+            doc.text("Recibo de Inscripción - SILACORP", 105, 20, null, null, 'center');
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0); // Color negro
+
+            let yPos = 40;
+            const lineHeight = 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.text("Datos del Inscrito:", 20, yPos);
+            yPos += lineHeight;
+            doc.setFont(undefined, 'normal');
+
+            doc.text(`Nombre Completo: ${nombre}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Fecha de Nacimiento: ${fechaNacimiento || 'No especificada'}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Teléfono: ${telefono}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Email: ${email}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Ciudad: ${ciudad || 'No especificada'}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Estado: ${estado || 'No especificado'}`, 20, yPos);
+            yPos += lineHeight;
+            
+            yPos += lineHeight; // Espacio extra
+            doc.setFont(undefined, 'bold');
+            doc.text("Detalles del Curso:", 20, yPos);
+            yPos += lineHeight;
+            doc.setFont(undefined, 'normal');
+
+            doc.text(`Curso Seleccionado: ${curso}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Modalidad: ${modalidad}`, 20, yPos);
+            yPos += lineHeight;
+
+            if (comentarios) {
+                doc.setFont(undefined, 'bold');
+                doc.text("Comentarios Adicionales:", 20, yPos);
+                yPos += lineHeight;
+                doc.setFont(undefined, 'normal');
+                // Manejo de texto largo para comentarios
+                const splitComentarios = doc.splitTextToSize(comentarios, 170); // 170 es el ancho aprox.
+                doc.text(splitComentarios, 20, yPos);
+                yPos += (splitComentarios.length * (lineHeight - 3)); // Ajustar según número de líneas
+            }
+            
+            yPos += lineHeight * 2;
+            doc.setFontSize(10);
+            doc.setTextColor(100); // Gris
+            doc.text("Este es un comprobante de inscripción generado automáticamente.", 105, yPos, null, null, 'center');
+            yPos += lineHeight;
+            doc.text(`Fecha de generación: ${new Date().toLocaleDateString()}`, 105, yPos, null, null, 'center');
+
+
+            doc.save('recibo_inscripcion_SILACORP.pdf');
+        });
+
+        // Smooth scroll para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Placeholder para el logo - permite al usuario cambiarlo si es necesario
+        // Puedes pedir al usuario que ingrese la URL del logo aquí o dejarlo como está
+        // const logoUrl = prompt("Por favor, ingresa la URL de tu logo (ej: https://raw.githubusercontent.com/.../logo.png) o deja en blanco para usar el placeholder:");
+        // if (logoUrl) {
+        //    document.getElementById('logoEmpresa').src = logoUrl;
+        // }
+        // Por defecto, se usa un placeholder. Si quieres que el usuario ingrese la URL, puedes descomentar las líneas de arriba.
+        // O puedes reemplazar directamente el src de la imagen del logo en el HTML.
+        // Ejemplo: document.getElementById('logoEmpresa').src = 'URL_DE_TU_LOGO_EN_GITHUB_RAW';
+
+    </script>
+
+</body>
+</html>
